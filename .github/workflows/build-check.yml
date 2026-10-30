@@ -1,0 +1,17 @@
+# Optional safety net: GitHub builds every push/PR with the same Hugo version as
+# the server, so a broken post shows a red X on GitHub. Deployment itself is
+# done by the server's webhook (scripts/webhook.py), not by this workflow.
+name: Hugo build check
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Hugo extended 0.169.0
+        run: |
+          curl -sSL -o /tmp/hugo.tgz https://github.com/gohugoio/hugo/releases/download/v0.169.0/hugo_extended_0.169.0_linux-amd64.tar.gz
+          tar -xzf /tmp/hugo.tgz -C /usr/local/bin hugo
+          hugo version
+      - name: Build
+        run: hugo --gc --minify --panicOnWarning

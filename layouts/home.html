@@ -1,0 +1,57 @@
+{{- /* CrisNews homepage: one featured story + a grid of recent stories.
+       Featured = newest post with `featured: true`, else simply the newest post. */ -}}
+{{- define "main" }}
+{{- $settings := hugo.Data.settings | default dict }}
+{{- $posts := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $featured := index (where $posts "Params.featured" true) 0 | default (index $posts 0) }}
+<div class="cn-home">
+  {{- with $settings.tagline }}
+  <p class="cn-tagline">{{ . }}</p>
+  {{- end }}
+  {{- with $settings.home_intro }}
+  <p class="cn-intro">{{ . }}</p>
+  {{- end }}
+
+  {{- with $featured }}
+  <article class="cn-featured">
+    <a class="cn-featured-link" href="{{ .RelPermalink }}" aria-label="{{ .Title | plainify }}">
+      {{- partial "cn-card-image.html" (dict "page" . "eager" true) }}
+      <div class="cn-featured-body">
+        <span class="cn-kicker">{{ $settings.featured_label | default "Top Story" }}{{ with .Params.categories }} · {{ index . 0 }}{{ end }}</span>
+        <h1 class="cn-featured-title">{{ .Title }}</h1>
+        {{- with .Description }}<p class="cn-dek">{{ . }}</p>{{ end }}
+        <div class="cn-meta">{{ partial "post_meta.html" . }}</div>
+      </div>
+    </a>
+  </article>
+  {{- end }}
+
+  {{- $rest := $posts }}
+  {{- with $featured }}{{ $rest = where $posts "Permalink" "!=" .Permalink }}{{ end }}
+  {{- if $rest }}
+  <h2 class="cn-section-title">{{ $settings.more_stories_label | default "More Stories" }}</h2>
+  <div class="cn-grid">
+    {{- range first 9 $rest }}
+    <article class="cn-card">
+      <a href="{{ .RelPermalink }}" aria-label="{{ .Title | plainify }}">
+        {{- partial "cn-card-image.html" (dict "page" . "eager" false) }}
+        <div class="cn-card-body">
+          {{- with .Params.categories }}<span class="cn-kicker">{{ index . 0 }}</span>{{ end }}
+          <h3 class="cn-card-title">{{ .Title }}</h3>
+          {{- with .Description }}<p class="cn-card-dek">{{ . }}</p>{{ end }}
+          <div class="cn-meta">{{ partial "post_meta.html" . }}</div>
+        </div>
+      </a>
+    </article>
+    {{- end }}
+  </div>
+  {{- if gt (len $rest) 9 }}
+  <p class="cn-more"><a href="{{ "posts/" | relLangURL }}">See all stories →</a></p>
+  {{- end }}
+  {{- end }}
+
+  {{- if not $posts }}
+  <p class="cn-empty">No stories yet — open <a href="/admin/">/admin/</a> to write the first one.</p>
+  {{- end }}
+</div>
+{{- end }}

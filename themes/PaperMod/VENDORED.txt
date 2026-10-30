@@ -1,0 +1,1 @@
+Vendored from https://github.com/adityatelange/hugo-PaperMod commit 118119693d8b5ac211b939775678310973bcb232 2026-10-25 on 2026-10-29 (no submodule). To update: re-download and replace this folder.

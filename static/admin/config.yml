@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+#
+# CrisNews Network — Sveltia CMS configuration.
+# Paths are relative to the ROOT OF THE GITHUB REPO, which is the Hugo site
+# folder (/home/hermes-worker/crisnews/site on the server).
+
+backend:
+  name: github
+  repo: TPizzle1996/crisnews-site
+  branch: main
+  # PLACEHOLDER — URL of the Cloudflare Worker from docs/OAUTH.md (no trailing slash)
+  base_url: https://sveltia-cms-auth.REPLACE-ME.workers.dev
+  commit_messages:
+    create: 'New {{collection}}: “{{slug}}”'
+    update: 'Update {{collection}}: “{{slug}}”'
+    delete: 'Delete {{collection}}: “{{slug}}”'
+    uploadMedia: 'Upload “{{path}}”'
+    deleteMedia: 'Delete “{{path}}”'
+
+site_url: https://crisnews-network.online
+display_url: https://crisnews-network.online
+
+# Where uploaded pictures go in the repo, and the URL they get on the website.
+media_folder: static/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  # ---------------------------------------------------------------- Posts
+  - name: posts
+    label: Posts
+    label_singular: Post
+    description: News stories shown on the homepage, newest first.
+    folder: content/posts
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    extension: md
+    format: yaml-frontmatter
+    summary: '{{title}} — {{date | date("MMM D, YYYY")}}{{draft | ternary(" (draft)", "")}}'
+    sortable_fields:
+      fields: [date, title]
+      default: { field: date, direction: descending }
+    fields:
+      - { name: title, label: Headline, widget: string }
+      - { name: date, label: Publish date, widget: datetime }
+      - name: draft
+        label: Draft (hidden from the website)
+        widget: boolean
+        default: true
+        hint: Turn this OFF when the story is ready to publish.
+      - name: description
+        label: Short summary
+        widget: text
+        required: false
+        hint: One or two sentences. Shown under the headline on the homepage and in Google results.
+      - name: featured
+        label: Top story on the homepage
+        widget: boolean
+        default: false
+        required: false
+      - name: cover
+        label: Cover image
+        widget: object
+        required: false
+        collapsed: false
+        fields:
+          - { name: image, label: Image, widget: image, required: false, hint: 'Drag a photo here. Wide (landscape) photos look best.' }
+          - { name: alt, label: Describe the image (for blind readers), widget: string, required: false }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - name: categories
+        label: Categories
+        widget: select
+        multiple: true
+        required: false
+        options: [Community, Events, Education, Environment, Business, People, Sports]
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        hint: Optional keywords, separated by commas.
+      - name: comments
+        label: Allow comments
+        widget: boolean
+        default: true
+        hint: Turn OFF to hide the comment section on this story.
+      - { name: body, label: Story, widget: markdown }
+
+  # ---------------------------------------------------------------- Pages
+  - name: pages
+    label: Pages
+    description: Stand-alone pages such as About.
+    files:
+      - name: about
+        label: About page
+        file: content/about.md
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: description, label: Short summary, widget: text, required: false }
+          - { name: date, label: Date, widget: datetime }
+          - { name: draft, label: Draft, widget: boolean, default: false }
+          - { name: comments, label: Allow comments, widget: boolean, default: false }
+          - { name: hidemeta, widget: hidden, default: true }
+          - { name: ShowShareButtons, widget: hidden, default: false }
+          - { name: ShowPostNavLinks, widget: hidden, default: false }
+          - { name: body, label: Page text, widget: markdown }
+      - name: news_index
+        label: News page heading
+        file: content/posts/_index.md
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: description, label: Short summary, widget: text, required: false }
+
+  # ------------------------------------------------------------- Settings
+  - name: settings
+    label: Settings
+    description: Homepage wording and footer text.
+    editor: { preview: false }
+    files:
+      - name: site
+        label: Homepage & footer
+        file: data/settings.yaml
+        format: yaml
+        fields:
+          - { name: tagline, label: Tagline (big line at top of homepage), widget: string }
+          - { name: home_intro, label: Homepage welcome text, widget: text, required: false }
+          - { name: featured_label, label: Label above the top story, widget: string, default: Top Story }
+          - { name: more_stories_label, label: Heading above the story grid, widget: string, default: More Stories }
+          - { name: contact_email, label: Contact email, widget: string, required: false }
+          - { name: footer_note, label: Footer note, widget: string, required: false }

@@ -1,0 +1,92 @@
+# CrisNews Network — Hugo configuration
+# The editor never needs to touch this file: everything she edits lives in
+# content/, data/settings.yaml and static/images/uploads (via /admin/).
+
+baseURL = "https://crisnews-network.online/"
+locale = "en-US"
+title = "CrisNews Network"
+theme = "PaperMod"
+copyright = "© CrisNews Network"
+enableRobotsTXT = true
+enableEmoji = true
+
+[pagination]
+  pagerSize = 9
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[markup.goldmark.renderer]
+  # The CMS markdown editor may insert raw HTML (e.g. embedded videos).
+  unsafe = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[minify]
+  disableXML = true
+
+# Every page under /posts/ gets comments ON unless the post says otherwise.
+[[cascade]]
+  [cascade.params]
+    comments = true
+  [cascade.target]
+    path = "/posts/**"
+
+[params]
+  env = "production"
+  title = "CrisNews Network"
+  description = "Local news, people and events — written by and for our community."
+  author = "CrisNews Network"
+  images = ["/images/uploads/crisnews-default.jpg"]
+  defaultTheme = "light"
+  disableThemeToggle = false
+  mainSections = ["posts"]
+  DateFormat = "January 2, 2006"
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = false
+  ShowToc = false
+  ShowRssButtonInSectionTermList = true
+  hideAuthor = true
+  # Comments are OFF site-wide by default (e.g. the About page);
+  # the cascade above switches them ON for every post.
+  comments = false
+
+  [params.cover]
+    hidden = false
+    hiddenInList = false
+    hiddenInSingle = false
+    responsiveImages = true
+
+  [params.remark42]
+    host = "https://comments.crisnews-network.online"
+    siteID = "crisnews"
+    locale = "en"
+
+  [params.assets]
+    disableHLJS = true
+
+  [params.fuseOpts]
+    keys = ["title", "summary", "content"]
+
+[menus]
+  [[menus.main]]
+    name = "News"
+    pageRef = "/posts"
+    weight = 10
+  [[menus.main]]
+    name = "Categories"
+    pageRef = "/categories"
+    weight = 20
+  [[menus.main]]
+    name = "Search"
+    pageRef = "/search"
+    weight = 30
+  [[menus.main]]
+    name = "About"
+    pageRef = "/about"
+    weight = 40

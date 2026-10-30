@@ -1,0 +1,7 @@
+{{- /* Cover image for homepage cards. Falls back to the site default image. */ -}}
+{{- $p := .page }}
+{{- $src := $p.Params.cover.image | default "/images/uploads/crisnews-default.jpg" }}
+{{- $alt := $p.Params.cover.alt | default $p.Title }}
+<div class="cn-img">
+  <img src="{{ $src | relURL }}" alt="{{ $alt | plainify }}" loading="{{ cond .eager "eager" "lazy" }}" decoding="async">
+</div>
