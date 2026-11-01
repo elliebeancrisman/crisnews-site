@@ -6,7 +6,7 @@
 
 backend:
   name: github
-  repo: TPizzle1996/crisnews-site
+  repo: elliebeancrisman/crisnews-site
   branch: main
   # PLACEHOLDER — URL of the Cloudflare Worker from docs/OAUTH.md (no trailing slash)
   base_url: https://sveltia-cms-auth.REPLACE-ME.workers.dev
